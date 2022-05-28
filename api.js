@@ -1,11 +1,27 @@
 const http = require("http");
-http.createServer(function (request, response) {
+const { parse } = require('querystring');
 
-  response.end(JSON.stringify({1:request.url}));
+http.createServer(function (request, response) {
+  response.setHeader('Access-Control-Allow-Origin', '*');
+  response.setHeader('Access-Control-Allow-Headers', 'origin, content-type, accept');
+
+  if (request.method === 'OPTIONS') {
+    response.end('');
+  }
+
+  if (request.method == 'POST') {
+    let body = '';
+        request.on('data', chunk => {
+            body += chunk.toString();
+        });
+        request.on('end', () => {
+          console.log(body);
+          response.end(body);
+      });
+    console.log(body)
+  }
   console.log(`Запрошенный адрес: ${request.url}`);
 
 }).listen(2000, "127.0.0.1", function () {
-  console.log("Сервер начал прослушивание запросов на порту 3000");
+  console.log("Сервер начал прослушивание запросов на порту 2000");
 });
-
-let object = {1: '9'}
