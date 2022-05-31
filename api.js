@@ -16,10 +16,11 @@ http.createServer(function (request, response) {
         request.on('data', chunk => {
             body += chunk.toString();
         });
-        request.on('end', () => {
+        request.on('end', async () => {
           const data = JSON.parse (body)
-          loginQuery(data.email, data.password)
+          let result = await loginQuery(data.email, data.password)
           response.end(body);
+          console.log(result)
       });
   }
   console.log(`Запрошенный адрес: ${request.url}`);
