@@ -1,3 +1,4 @@
+const { error } = require('console');
 const http = require("http");
 const { parse } = require('querystring');
 const { client } = require('./connect');
@@ -13,15 +14,22 @@ http.createServer(function (request, response) {
 
   if (request.method == 'POST' && request.url == "/login") {
     let body = '';
-        request.on('data', chunk => {
-            body += chunk.toString();
-        });
-        request.on('end', async () => {
-          const data = JSON.parse (body)
-          let result = await loginQuery(data.email, data.password)
-          response.end(body);
-          console.log(result)
-      });
+    request.on('data', chunk => {
+      body += chunk.toString();
+    });
+    request.on('end', async () => {
+      const data = JSON.parse(body)
+      let result = await loginQuery(data.email, data.password)
+      console.log(result)
+      const result1 = (JSON.stringify({ error: 'invalid login or password' }))
+      const result2 = JSON.stringify({ token: "" })
+      if (result == false) {
+        response.statusCode = 401;
+        response.end(result1)
+      } else {
+        response.end(result2)
+      }
+    });
   }
   console.log(`Запрошенный адрес: ${request.url}`);
 
