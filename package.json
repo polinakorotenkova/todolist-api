@@ -3,6 +3,7 @@
     "start": "node ./api.js"
   },
   "dependencies": {
+    "jsonwebtoken": "^8.5.1",
     "pg": "^8.7.3"
   }
 }

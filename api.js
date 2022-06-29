@@ -24,7 +24,9 @@ http.createServer(function (request, response) {
         let result = await loginQuery(data.email, data.password)
         console.log(result)
         const result1 = (JSON.stringify({ error: 'invalid login or password' }))
-        const result2 = JSON.stringify({ token: "" })
+        var jwt = require('jsonwebtoken');
+        var token = jwt.sign({ login: data.email,name: data.name }, "nasrat");
+        const result2 = JSON.stringify({ token: token })
         if (result == false) {
           response.statusCode = 401;
           response.end(result1)
@@ -45,7 +47,9 @@ http.createServer(function (request, response) {
         const data = JSON.parse(body)
         let result = await regisration(data.email, data.password, data.name)
         const result1 = (JSON.stringify({ error: 'this login is already in use' }))
-        const result2 = JSON.stringify({ token: "" })
+        var jwt = require('jsonwebtoken');
+        var token = jwt.sign({ login: data.email,name: data.name }, "nasrat");
+        const result2 = JSON.stringify({ token: token })
         if (result == true) {
           response.end(result2)
           return
