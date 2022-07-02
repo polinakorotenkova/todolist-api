@@ -24,15 +24,16 @@ http.createServer(function (request, response) {
         let result = await loginQuery(data.email, data.password)
         console.log(result)
         const result1 = (JSON.stringify({ error: 'invalid login or password' }))
-        var jwt = require('jsonwebtoken');
-        var token = jwt.sign({ login: data.email,name: data.name }, "nasrat");
-        const result2 = JSON.stringify({ token: token })
-        if (result == false) {
+        if (!result) {
           response.statusCode = 401;
           response.end(result1)
 
           return;
         }
+        var jwt = require('jsonwebtoken');
+        var token = jwt.sign({ id: result.id,name: data.name }, "nasrat");
+        const result2 = JSON.stringify({ token: token })
+
       
         response.end(result2)
       });
