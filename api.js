@@ -1,11 +1,13 @@
 const { error } = require('console');
 const http = require("http");
+var jwt = require('jsonwebtoken');
 const { parse } = require('querystring');
 const { client } = require('./connect');
 const { loginQuery } = require('./login-query');
+const { receivingTodos } = require('./receiving-todos');
 const { regisration } = require('./registration-query');
 
-http.createServer(function (request, response) {
+http.createServer(async function (request, response) {
   response.setHeader('Access-Control-Allow-Origin', '*');
   response.setHeader('Access-Control-Allow-Headers', 'origin, content-type, accept');
 
@@ -30,10 +32,8 @@ http.createServer(function (request, response) {
 
           return;
         }
-        var jwt = require('jsonwebtoken');
-        var token = jwt.sign({ id: result.id,name: data.name }, "nasrat");
+        var token = jwt.sign({ userId: result.id,name: data.name }, "nasrat");
         const result2 = JSON.stringify({ token: token })
-
       
         response.end(result2)
       });
@@ -58,6 +58,25 @@ http.createServer(function (request, response) {
         response.statusCode = 401;
           response.end(result1)
       });
+    }
+  }
+
+  if (request.method == 'GET') {
+    if (request.url == "/todos") {
+        const token = request.headers.authorization;
+        const decoded = jwt.verify(token, 'nasrat');
+        console.log(decoded);
+        let result = await receivingTodos(decoded.userId)
+        console.log(result)
+        const result1 = (JSON.stringify({ error: 'invalid login or password' }))
+        if (!result.length) {
+          response.statusCode = 401;
+          response.end(result1)
+
+          return;
+        }
+
+        response.end(JSON.stringify(result))
     }
   }
 
