@@ -2,6 +2,7 @@ const { error } = require('console');
 const http = require("http");
 var jwt = require('jsonwebtoken');
 const { parse } = require('querystring');
+const { addTodos } = require('./add-todos');
 const { client } = require('./connect');
 const { loginQuery } = require('./login-query');
 const { receivingTodos } = require('./receiving-todos');
@@ -59,6 +60,29 @@ http.createServer(async function (request, response) {
           response.end(result1)
       });
     }
+
+    if (request.url == "/addtodos") {
+      let body = '';
+      request.on('data', chunk => {
+        body += chunk.toString();
+      });
+      request.on('end', async () => {
+        const data = JSON.parse(body)
+        const token = request.headers.authorization;
+        const decoded = jwt.verify(token, 'nasrat');
+        console.log(decoded);
+        let result = await addTodos(data.text, data.isDone, decoded.userId)
+        console.log(result)
+        const result2 = 'task added successfully'
+        const result1 = JSON.stringify({ error: 'error 1' })
+        if (!result) {
+          response.statusCode = 401;
+          response.end(result1)
+
+          return;
+        }
+        response.end(result2)})
+    }
   }
 
   if (request.method == 'GET') {
@@ -68,7 +92,7 @@ http.createServer(async function (request, response) {
         console.log(decoded);
         let result = await receivingTodos(decoded.userId)
         console.log(result)
-        const result1 = (JSON.stringify({ error: 'invalid login or password' }))
+        const result1 = (JSON.stringify({ error: 'error' }))
         if (!result.length) {
           response.statusCode = 401;
           response.end(result1)
