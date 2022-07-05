@@ -4,6 +4,7 @@ var jwt = require('jsonwebtoken');
 const { parse } = require('querystring');
 const { addTodos } = require('./add-todos');
 const { client } = require('./connect');
+const { deleteTodos } = require('./delete');
 const { loginQuery } = require('./login-query');
 const { receivingTodos } = require('./receiving-todos');
 const { regisration } = require('./registration-query');
@@ -101,6 +102,31 @@ http.createServer(async function (request, response) {
         }
 
         response.end(JSON.stringify(result))
+    }
+  }
+
+  if (request.method == 'DELETE') {
+    if (request.url == "/delete") {
+      let body = '';
+      request.on('data', chunk => {
+        body += chunk.toString();
+      });
+      request.on('end', async () => {
+        const data = JSON.parse(body)
+        const token = request.headers.authorization;
+        const decoded = jwt.verify(token, 'nasrat');
+        const userId = decoded.userId
+        let result = await deleteTodos(data.id, userId)
+        console.log(result)
+        const result1 = JSON.stringify({ error: 'error' })
+        const result2 = "task deleted"
+        if (result == 0){
+          response.statusCode = 401;
+          response.end(result1)
+          return
+        }
+        response.end(result2)
+      })
     }
   }
 
