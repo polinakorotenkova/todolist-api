@@ -16,3 +16,4 @@ module.exports = {
 // добавление 
 //удаление
 //редактирование
+//для редактроования нужно в запросе передать id тудушки and new data (column text or isdone) method put
