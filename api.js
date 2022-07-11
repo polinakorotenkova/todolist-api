@@ -12,7 +12,9 @@ const { regisration } = require('./registration-query');
 
 http.createServer(async function (request, response) {
   response.setHeader('Access-Control-Allow-Origin', '*');
-  response.setHeader('Access-Control-Allow-Headers', 'origin, content-type, accept');
+  response.setHeader('Access-Control-Allow-Headers', 'origin, content-type, accept, authorization');
+  response.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
+
 
   if (request.method === 'OPTIONS') {
     response.end('');
