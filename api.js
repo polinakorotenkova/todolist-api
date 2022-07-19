@@ -52,16 +52,20 @@ http.createServer(async function (request, response) {
       request.on('end', async () => {
         const data = JSON.parse(body)
         let result = await regisration(data.email, data.password, data.name)
-        const result1 = (JSON.stringify({ error: 'this login is already in use' }))
-        var jwt = require('jsonwebtoken');
-        var token = jwt.sign({ login: data.email,name: data.name }, "nasrat");
-        const result2 = JSON.stringify({ token: token })
-        if (result == true) {
-          response.end(result2)
-          return
-        } 
-        response.statusCode = 401;
+        console.log(result.rows[0].id)
+
+        if (!result) {
+          const result1 = (JSON.stringify({ error: 'this login is already in use' }));
+          response.statusCode = 401;
           response.end(result1)
+          return
+        }
+
+        var jwt = require('jsonwebtoken');
+        var token = jwt.sign({ userId: result.rows[0].id ,name: data.name, }, "nasrat");
+        const result2 = JSON.stringify({ token: token })
+
+        response.end(result2)
       });
     }
 
@@ -96,14 +100,6 @@ http.createServer(async function (request, response) {
         console.log(decoded);
         let result = await receivingTodos(decoded.userId)
         console.log(result)
-        const result1 = (JSON.stringify({ error: 'error' }))
-        if (!result.length) {
-          response.statusCode = 401;
-          response.end(result1)
-
-          return;
-        }
-
         response.end(JSON.stringify(result))
     }
   }
