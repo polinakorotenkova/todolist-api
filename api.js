@@ -1,5 +1,5 @@
 const { error } = require('console');
-const http = require("http");
+const http = require('http');
 var jwt = require('jsonwebtoken');
 const { parse } = require('querystring');
 const { addTodos } = require('./add-todos');
@@ -21,7 +21,7 @@ http.createServer(async function (request, response) {
   }
 
   if (request.method == 'POST') {
-    if (request.url == "/login") {
+    if (request.url == '/login') {
       let body = '';
       request.on('data', chunk => {
         body += chunk.toString();
@@ -36,14 +36,14 @@ http.createServer(async function (request, response) {
 
           return;
         }
-        var token = jwt.sign({ userId: result.id,name: data.name }, "nasrat");
+        var token = jwt.sign({ userId: result.id,name: data.name }, 'nasrat');
         const result2 = JSON.stringify({ token: token })
       
         response.end(result2)
       });
     }
 
-    if (request.url == "/registration") {
+    if (request.url == '/registration') {
       let body = '';
       request.on('data', chunk => {
         body += chunk.toString();
@@ -61,14 +61,14 @@ http.createServer(async function (request, response) {
         }
 
         var jwt = require('jsonwebtoken');
-        var token = jwt.sign({ userId: result.rows[0].id ,name: data.name, }, "nasrat");
+        var token = jwt.sign({ userId: result.rows[0].id ,name: data.name, }, 'nasrat');
         const result2 = JSON.stringify({ token: token })
 
         response.end(result2)
       });
     }
 
-    if (request.url == "/addtodos") {
+    if (request.url == '/addtodos') {
       let body = '';
       request.on('data', chunk => {
         body += chunk.toString();
@@ -91,7 +91,7 @@ http.createServer(async function (request, response) {
   }
 
   if (request.method == 'GET') {
-    if (request.url == "/todos") {
+    if (request.url == '/todos') {
         const token = request.headers.authorization;
         const decoded = jwt.verify(token, 'nasrat');
         let result = await receivingTodos(decoded.userId)
@@ -100,7 +100,7 @@ http.createServer(async function (request, response) {
   }
 
   if (request.method == 'DELETE') {
-    if (request.url == "/delete") {
+    if (request.url == '/delete') {
       let body = '';
       request.on('data', chunk => {
         body += chunk.toString();
@@ -112,7 +112,7 @@ http.createServer(async function (request, response) {
         const userId = decoded.userId
         let result = await deleteTodos(data.id, userId)
         const result1 = JSON.stringify({ error: 'error' })
-        const result2 = "task deleted"
+        const result2 = 'task deleted'
         if (result == 0){
           response.statusCode = 401;
           response.end(result1)
@@ -124,7 +124,7 @@ http.createServer(async function (request, response) {
   }
 
   if (request.method == 'PUT') {
-    if (request.url == "/change") {
+    if (request.url == '/change') {
       let body = '';
       request.on('data', chunk => {
         body += chunk.toString();
@@ -136,7 +136,7 @@ http.createServer(async function (request, response) {
         const userId = decoded.userId
         let result = await changeTodo (data.id, userId, data.text, data.isDone)
         const result1 = JSON.stringify({ error: 'error' })
-        const result2 = "task changed"
+        const result2 = 'task changed'
         if (result == 0){
           response.statusCode = 401;
           response.end(result1)
@@ -152,6 +152,6 @@ http.createServer(async function (request, response) {
 }).listen(2000, "127.0.0.1", async function () {
   console.log('подключаемся к базе данных')
   await client.connect()
-  console.log("Сервер начал прослушивание запросов на порту 2000");
+  console.log('Сервер начал прослушивание запросов на порту 2000');
 
 });
