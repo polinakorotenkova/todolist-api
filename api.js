@@ -29,7 +29,6 @@ http.createServer(async function (request, response) {
       request.on('end', async () => {
         const data = JSON.parse(body)
         let result = await loginQuery(data.email, data.password)
-        console.log(result)
         const result1 = (JSON.stringify({ error: 'invalid login or password' }))
         if (!result) {
           response.statusCode = 401;
@@ -78,9 +77,7 @@ http.createServer(async function (request, response) {
         const data = JSON.parse(body)
         const token = request.headers.authorization;
         const decoded = jwt.verify(token, 'nasrat');
-        console.log(decoded);
         let result = await addTodos(data.text, data.isDone, decoded.userId)
-        console.log(result)
         const result2 = 'task added successfully'
         const result1 = JSON.stringify({ error: 'error 1' })
         if (!result) {
@@ -97,9 +94,7 @@ http.createServer(async function (request, response) {
     if (request.url == "/todos") {
         const token = request.headers.authorization;
         const decoded = jwt.verify(token, 'nasrat');
-        console.log(decoded);
         let result = await receivingTodos(decoded.userId)
-        console.log(result)
         response.end(JSON.stringify(result))
     }
   }
@@ -116,7 +111,6 @@ http.createServer(async function (request, response) {
         const decoded = jwt.verify(token, 'nasrat');
         const userId = decoded.userId
         let result = await deleteTodos(data.id, userId)
-        console.log(result)
         const result1 = JSON.stringify({ error: 'error' })
         const result2 = "task deleted"
         if (result == 0){
@@ -141,7 +135,6 @@ http.createServer(async function (request, response) {
         const decoded = jwt.verify(token, 'nasrat');
         const userId = decoded.userId
         let result = await changeTodo (data.id, userId, data.text, data.isDone)
-        console.log(result)
         const result1 = JSON.stringify({ error: 'error' })
         const result2 = "task changed"
         if (result == 0){
