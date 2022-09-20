@@ -1,11 +1,11 @@
-const { client } = require('./connect')
+const { client } = require('./connect');
 
 async function receivingTodos(userId) {
-  const todos = await client.query(`select * from todos where user_id = ${userId}`)
+  const todos = await client.query(`select * from todos where user_id = ${userId}`);
 
-  return todos.rows
+  return todos.rows;
 }
 
 module.exports = {
-  receivingTodos
-}
+  receivingTodos,
+};
