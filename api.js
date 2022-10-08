@@ -16,6 +16,7 @@ http.createServer(async (request, response) => {
 
   if (request.method === 'OPTIONS') {
     response.end('');
+    return;
   }
 
   if (request.method === 'POST') {
